@@ -1,0 +1,51 @@
+RECURSOS Y LICENCIAS
+====================
+
+1. Ultimate Home Interior Pack
+Autor: Quaternius
+Uso: modelos domésticos del Nivel 4.
+Licencia indicada por el autor: CC0.
+Sitio: https://quaternius.com/packs/ultimatehomeinterior.html
+
+2. Factory Kit 3.0
+Autor: Kenney
+Uso: modelos industriales del Nivel 5.
+Licencia: CC0.
+La licencia original está incluida en:
+Licenses/Kenney_Factory_Kit_License.txt
+
+3. UI Pack 2.0
+Autor: Kenney
+Uso: botones e indicadores.
+Licencia: CC0.
+La licencia original está incluida en:
+Licenses/Kenney_UI_Pack_License.txt
+
+4. Interface Sounds
+Autor: Kenney
+Uso: sonidos de interfaz, orbes y finalización.
+Licencia: CC0.
+La licencia original está incluida en:
+Licenses/Kenney_Interface_Sounds_License.txt
+
+5. House Interior Ambience with AC On
+Archivo aportado por la usuaria.
+Autor indicado en el nombre del archivo original: tommylynn.
+Origen: Pixabay.
+Uso: ambiente del Nivel 4.
+
+6. Industrial Ambiance
+Archivo aportado por la usuaria.
+Autor indicado en el nombre del archivo original: freesound_community.
+Origen: Pixabay.
+Uso: ambiente general del Nivel 5.
+
+7. Large Industrial Fan Running Constantly in Warehouse Environment
+Archivo aportado por la usuaria.
+Autor indicado en el nombre del archivo original: jadeallencook.
+Origen: Pixabay.
+Uso: sonido espacial de ventilador del Nivel 5.
+
+8. Wolf Spider
+No se redistribuye dentro de este paquete.
+El instalador busca y reutiliza el modelo ya importado en el proyecto NeuroPhobia.

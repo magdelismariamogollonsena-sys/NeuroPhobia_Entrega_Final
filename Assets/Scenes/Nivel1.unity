@@ -1355,6 +1355,57 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.88159114, y: 0.9813023, z: 0.88159114}
   m_Center: {x: 0, y: 0.49065116, z: 0}
+--- !u!1 &589342919
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 589342921}
+  - component: {fileID: 589342920}
+  m_Layer: 0
+  m_Name: NP_Seleccion_Modo_Control
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &589342920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589342919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18084819b7f3097448a56a0429086a88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NeuroPhobiaControlModeSelector
+  desktopPlayer: {fileID: 1807992700}
+  xrOrigin: {fileID: 774029069}
+  desktopCamera: {fileID: 863197631}
+  askEveryTimeSceneStarts: 1
+  inputGuardSeconds: 0.65
+  computerLabel: USAR COMPUTADOR
+  vrLabel: USAR REALIDAD VIRTUAL
+--- !u!4 &589342921
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589342919}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619011503
 GameObject:
   m_ObjectHideFlags: 0
@@ -1984,19 +2035,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 1.8039742
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.68
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -38.54
+      value: -38.302
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -0.7335295
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalRotation.x
@@ -2004,7 +2055,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: 0.67965764
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_LocalRotation.z
@@ -2270,11 +2321,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
---- !u!1 &839900687 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6598815579406187037, guid: 18ddb545287c546e19cc77dc9fbb2189, type: 3}
-  m_PrefabInstance: {fileID: 839900686}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &846030821
 GameObject:
   m_ObjectHideFlags: 0
@@ -4373,7 +4419,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1807992703}
   - component: {fileID: 1807992702}
-  - component: {fileID: 1807992701}
+  - component: {fileID: 1807992704}
   m_Layer: 0
   m_Name: NP_DesktopPlayer_Normalizado
   m_TagString: Untagged
@@ -4381,34 +4427,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1807992701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1807992700}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daa67ef939ed12c40a2b2eec0cd8de43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NeuroPhobiaDesktopController
-  spawnPosition: {x: 1.8039742, y: 0.07000012, z: -38.302}
-  spawnRotation: {x: 0, y: 274.3662, z: 0}
-  walkSpeed: 2
-  runSpeed: 4
-  mouseSensitivity: 0.12
-  gravity: -18
-  resetBelowY: -2
-  cameraPivot: {fileID: 1684503944}
-  desktopCamera: {fileID: 863197631}
-  objectsToDisableOnDesktop:
-  - {fileID: 774029069}
-  - {fileID: 839900687}
-  - {fileID: 1201071591}
-  xrObjectsToEnableOnQuest:
-  - {fileID: 774029069}
-  - {fileID: 839900687}
 --- !u!143 &1807992702
 CharacterController:
   m_ObjectHideFlags: 0
@@ -4450,6 +4468,27 @@ Transform:
   - {fileID: 1684503944}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+--- !u!114 &1807992704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1807992700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3226352f0dfc4444a8f58e2cdfacf3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NeuroPhobiaDesktopController
+  cameraPivot: {fileID: 1684503944}
+  playerCamera: {fileID: 863197631}
+  moveSpeed: 2.8
+  runMultiplier: 1.55
+  gravity: -18
+  mouseSensitivity: 0.1
+  minPitch: -80
+  maxPitch: 80
+  lockCursorOnEnable: 1
 --- !u!1 &1892807639
 GameObject:
   m_ObjectHideFlags: 0
@@ -4848,3 +4887,4 @@ SceneRoots:
   - {fileID: 2043644160}
   - {fileID: 1068958031}
   - {fileID: 1736745864}
+  - {fileID: 589342921}

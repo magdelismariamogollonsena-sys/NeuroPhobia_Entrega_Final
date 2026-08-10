@@ -1,0 +1,123 @@
+NEUROPHOBIA - PAQUETE COMPLETO NIVELES 4 Y 5
+================================================
+
+ESTE ZIP YA ESTÁ ORGANIZADO PARA UNITY.
+
+IMPORTANTE
+----------
+Descomprime el ZIP directamente dentro de:
+
+C:\NeuroPhobia\
+
+La ruta final correcta debe quedar así:
+
+C:\NeuroPhobia\Assets\NeuroPhobia_Level45\
+
+NO lo descomprimas dentro de Assets, porque se produciría:
+Assets\Assets\NeuroPhobia_Level45
+
+CONTENIDO
+---------
+Assets\NeuroPhobia_Level45\
+  Art\House\Models\
+  Art\Factory\Models\
+  Art\Factory\Textures\
+  Audio\Level4\
+  Audio\Level5\
+  Audio\UI\
+  UI\Sprites\
+  Scripts\Runtime\
+  Scripts\Editor\
+  Documentation\
+
+COMANDO PRINCIPAL
+-----------------
+Con Play detenido:
+
+Tools
+> NeuroPhobia
+> Configurar Niveles 4 y 5 COMPLETOS
+
+Este comando:
+1. Crea o actualiza Assets/Scenes/Nivel4.unity.
+2. Crea o actualiza Assets/Scenes/Nivel5.unity.
+3. Conserva el jugador/cámara existente.
+4. Desactiva el contenido antiguo de las escenas, sin borrarlo.
+5. Construye la habitación del Nivel 4.
+6. Construye la fábrica del Nivel 5.
+7. Busca y reutiliza la araña Wolf Spider del proyecto.
+8. Si no encuentra la araña, crea una araña procedural de respaldo.
+9. Configura las rutas naturales de movimiento.
+10. Crea las interfaces fijas.
+11. Crea las pantallas de felicitación.
+12. Agrega Nivel4 y Nivel5 al Build.
+
+COMANDOS INDIVIDUALES
+---------------------
+Tools > NeuroPhobia > Configurar Nivel 4 FINAL
+
+Tools > NeuroPhobia > Configurar Nivel 5 FINAL
+
+Tools > NeuroPhobia > Agregar Niveles 4 y 5 al Build
+
+Tools > NeuroPhobia > Verificar Niveles 4 y 5
+
+NIVEL 4
+-------
+Escenario: habitación doméstica amoblada.
+
+Objetivo:
+1. Acercarse al primer orbe.
+2. Mirar a la araña durante 10 segundos.
+3. Repetir el proceso en tres puntos de exposición.
+4. Al completar el tercer punto aparece:
+   ¡Felicitaciones!
+   Completaste el Nivel 4
+5. Después de 5 segundos carga Nivel5.
+
+La araña:
+- sigue una ruta fija;
+- no persigue al jugador;
+- gira antes de caminar;
+- usa la animación del modelo si existe;
+- usa movimiento corporal procedural si no existe un clip;
+- ignora sus propios colliders al buscar el suelo.
+
+NIVEL 5
+-------
+Escenario: fábrica industrial.
+
+Objetivo:
+1. Recoger cuatro orbes en orden.
+2. Entrar en el círculo final.
+3. Mirar a la araña central durante 15 segundos.
+4. Aparece:
+   ¡Felicitaciones!
+   Completaste NeuroPhobia
+5. Se muestran los botones:
+   Volver al menú
+   Repetir Nivel 5
+
+El Nivel 5 contiene tres arañas con rutas independientes y predecibles.
+
+PRUEBA
+------
+1. Abre Assets > Scenes > Nivel4.
+2. Guarda con Ctrl + S.
+3. Pulsa Play.
+4. Prueba los tres puntos.
+5. Comprueba que Nivel5 cargue.
+6. En Nivel5 recoge los cuatro orbes.
+7. Completa la mirada final.
+8. Prueba los dos botones.
+
+SI APARECE UN ERROR
+-------------------
+No vuelvas a ejecutar otros instaladores globales.
+
+Abre Window > General > Console.
+
+Envía el PRIMER mensaje rojo completo, incluyendo:
+- nombre del archivo;
+- número de línea;
+- texto del error.
