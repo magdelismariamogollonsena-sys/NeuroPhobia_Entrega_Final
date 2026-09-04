@@ -1,0 +1,44 @@
+NEUROPHOBIA - NIVEL 2 PARQUE GRANDE FINAL
+
+Este ZIP ya incluye los modelos y el HDR necesarios.
+
+INSTALACIÓN:
+1. Detén Play y Ctrl+S.
+2. Cierra Unity.
+3. Extrae este ZIP directamente en C:\NeuroPhobia\
+4. Abre Unity y espera a que compile.
+5. Ejecuta:
+   Tools > NeuroPhobia > Nivel 2 > CREAR PARQUE GRANDE FINAL
+6. Pulsa Play y prueba primero con Computador.
+
+Crea respaldo:
+Assets/Scenes/Nivel2_BACKUP_Antes_ParqueGrande.unity
+
+Tamaño aproximado del nuevo parque:
+60 x 50 metros.
+
+Conserva:
+- araña
+- jugador PC
+- XR
+- temporizador de mirada
+- límite de distancia
+- selector PC/RV
+- UI
+
+Incluye:
+- árboles variados
+- árboles pequeños
+- arbustos
+- flores
+- rocas
+- caminos
+- plaza central
+- bancas
+- faroles
+- basureros
+- cerca parcial
+- fondo HDR de parque
+
+Si oculta un entorno visual anterior que querías conservar:
+Tools > NeuroPhobia > Nivel 2 > Restaurar entorno visual anterior

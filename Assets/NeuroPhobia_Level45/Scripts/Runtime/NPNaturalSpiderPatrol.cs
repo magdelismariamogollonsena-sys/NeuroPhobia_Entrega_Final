@@ -37,7 +37,7 @@ namespace NeuroPhobia.Level45
         private float stableGroundY;
         private Vector3 visualBasePosition;
         private Quaternion visualBaseRotation;
-        private bool animatorHasController;
+        private Animator[] childAnimators;
 
         private void Awake()
         {
@@ -127,12 +127,38 @@ namespace NeuroPhobia.Level45
         public void PausePatrol()
         {
             paused = true;
-            UpdateAnimation(false);
+            SetChildAnimatorsPaused(true);
+            UpdateProceduralAnimation(false);
         }
 
         public void ResumePatrol()
         {
             paused = false;
+            SetChildAnimatorsPaused(false);
+        }
+
+        public int DetectedAnimatorCount =>
+            childAnimators != null ? childAnimators.Length : 0;
+
+        public int PausedAnimatorCount
+        {
+            get
+            {
+                if (childAnimators == null)
+                    return 0;
+
+                int count = 0;
+                foreach (Animator childAnimator in childAnimators)
+                {
+                    if (childAnimator != null &&
+                        Mathf.Approximately(childAnimator.speed, 0f))
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
         }
 
         private void PrepareObject()
@@ -144,9 +170,12 @@ namespace NeuroPhobia.Level45
                 rigidbodyComponent.useGravity = false;
             }
 
+            childAnimators =
+                GetComponentsInChildren<Animator>(true);
+
             if (animator == null)
             {
-                animator = GetComponentInChildren<Animator>(true);
+                animator = childAnimators.FirstOrDefault();
             }
 
             if (visualRoot == null)
@@ -167,14 +196,20 @@ namespace NeuroPhobia.Level45
                 visualBaseRotation = visualRoot.localRotation;
             }
 
-            if (animator != null)
+            foreach (Animator childAnimator in childAnimators)
             {
-                animator.applyRootMotion = false;
-                animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-                animatorHasController =
-                    animator.runtimeAnimatorController != null;
-                animator.enabled = animatorHasController;
-                animator.speed = animatorHasController
+                if (childAnimator == null)
+                    continue;
+
+                childAnimator.applyRootMotion = false;
+                childAnimator.cullingMode =
+                    AnimatorCullingMode.AlwaysAnimate;
+
+                bool hasController =
+                    childAnimator.runtimeAnimatorController != null;
+
+                childAnimator.enabled = hasController;
+                childAnimator.speed = hasController
                     ? animationSpeed
                     : 0f;
             }
@@ -299,11 +334,41 @@ namespace NeuroPhobia.Level45
 
         private void UpdateAnimation(bool moving)
         {
-            if (animatorHasController && animator != null)
+            if (childAnimators != null && childAnimators.Length > 0)
             {
-                animator.speed = moving ? animationSpeed : 0f;
+                if (!paused)
+                    SetChildAnimatorsPaused(!moving);
+
                 return;
             }
+
+            UpdateProceduralAnimation(moving);
+        }
+
+        private void SetChildAnimatorsPaused(bool pauseAnimations)
+        {
+            if (childAnimators == null)
+            {
+                childAnimators =
+                    GetComponentsInChildren<Animator>(true);
+            }
+
+            foreach (Animator childAnimator in childAnimators)
+            {
+                if (childAnimator == null ||
+                    childAnimator.runtimeAnimatorController == null)
+                {
+                    continue;
+                }
+
+                childAnimator.enabled = true;
+                childAnimator.speed =
+                    pauseAnimations ? 0f : animationSpeed;
+            }
+        }
+
+        private void UpdateProceduralAnimation(bool moving)
+        {
 
             if (!useProceduralMotionWhenNoClip ||
                 visualRoot == null)

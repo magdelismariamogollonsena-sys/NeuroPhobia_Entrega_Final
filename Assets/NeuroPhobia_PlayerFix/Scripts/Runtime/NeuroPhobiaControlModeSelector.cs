@@ -1,10 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.XR;
+using UnityEngine.XR.Management;
 
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -47,6 +49,9 @@ public sealed class NeuroPhobiaControlModeSelector : MonoBehaviour
     private bool started;
     private bool previousXRPressed;
     private Camera activeGameplayCamera;
+    private bool xrInitializationInProgress;
+    private bool xrSubsystemsStarted;
+    private bool computerRequestedDuringXRInitialization;
 
     private static readonly string[] DesktopNames =
     {
@@ -65,6 +70,7 @@ public sealed class NeuroPhobiaControlModeSelector : MonoBehaviour
     private void Awake()
     {
         ResolveSceneObjects();
+        xrSubsystemsStarted = AreXRSubsystemsRunning();
     }
 
     private void Start()
@@ -133,7 +139,16 @@ public sealed class NeuroPhobiaControlModeSelector : MonoBehaviour
             return;
         }
 
+        if (xrInitializationInProgress)
+        {
+            computerRequestedDuringXRInitialization = true;
+            SetStatus(
+                "Cancelando la inicialización de realidad virtual...");
+            return;
+        }
+
         ResolveSceneObjects();
+        StopAndDeinitializeXR();
 
         if (desktopPlayer == null)
         {
@@ -161,6 +176,7 @@ public sealed class NeuroPhobiaControlModeSelector : MonoBehaviour
         }
 
         desktopCamera = camera;
+        DisableCameras(desktopPlayer);
         camera.gameObject.SetActive(true);
         camera.enabled = true;
         EnsureMainCameraTag(camera);
@@ -181,7 +197,7 @@ public sealed class NeuroPhobiaControlModeSelector : MonoBehaviour
 
     public void SelectVirtualReality()
     {
-        if (selectionMade)
+        if (selectionMade || xrInitializationInProgress)
         {
             return;
         }
@@ -194,24 +210,80 @@ public sealed class NeuroPhobiaControlModeSelector : MonoBehaviour
             return;
         }
 
-        if (desktopPlayer != null)
+        StartCoroutine(InitializeAndSelectVirtualReality());
+    }
+
+    private IEnumerator InitializeAndSelectVirtualReality()
+    {
+        XRGeneralSettings settings = XRGeneralSettings.Instance;
+        XRManagerSettings manager =
+            settings != null ? settings.Manager : null;
+
+        if (manager == null)
         {
-            SetDesktopControllersEnabled(desktopPlayer, false);
-            SetAudioListenerState(desktopPlayer, null, false);
+            SetStatus(
+                "No se encontró la configuración de realidad virtual. " +
+                "Puedes continuar en modo COMPUTADOR.");
+            yield break;
         }
 
-        xrOrigin.SetActive(true);
+        xrInitializationInProgress = true;
+        computerRequestedDuringXRInitialization = false;
+        SetStatus("Inicializando realidad virtual...");
 
+        if (manager.activeLoader == null)
+            yield return manager.InitializeLoader();
+
+        xrInitializationInProgress = false;
+
+        if (computerRequestedDuringXRInitialization)
+        {
+            computerRequestedDuringXRInitialization = false;
+            SelectComputer();
+            yield break;
+        }
+
+        if (manager.activeLoader == null)
+        {
+            SetStatus(
+                "No se detectó un runtime o dispositivo de realidad " +
+                "virtual. Puedes elegir COMPUTADOR.");
+            yield break;
+        }
+
+        if (!xrSubsystemsStarted && !AreXRSubsystemsRunning())
+        {
+            manager.StartSubsystems();
+            xrSubsystemsStarted = true;
+        }
+        else
+        {
+            xrSubsystemsStarted = true;
+        }
+
+        ResolveSceneObjects();
         Camera xrCamera =
             xrOrigin.GetComponentInChildren<Camera>(true);
 
         if (xrCamera == null)
         {
+            StopAndDeinitializeXR();
             xrOrigin.SetActive(false);
-            SetStatus("XR Origin no contiene una cámara.");
-            return;
+            SetStatus(
+                "XR Origin no contiene una cámara. " +
+                "Puedes elegir COMPUTADOR.");
+            yield break;
         }
 
+        if (desktopPlayer != null)
+        {
+            SetDesktopControllersEnabled(desktopPlayer, false);
+            SetAudioListenerState(desktopPlayer, null, false);
+            DisableCameras(desktopPlayer);
+        }
+
+        DisableCameras(xrOrigin);
+        xrOrigin.SetActive(true);
         xrCamera.gameObject.SetActive(true);
         xrCamera.enabled = true;
         EnsureMainCameraTag(xrCamera);
@@ -221,14 +293,58 @@ public sealed class NeuroPhobiaControlModeSelector : MonoBehaviour
         CurrentMode = ControlMode.VirtualReality;
 
         if (desktopPlayer != null)
-        {
             desktopPlayer.SetActive(false);
-        }
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
-
         FinishSelection();
+    }
+
+    private void StopAndDeinitializeXR()
+    {
+        if (xrInitializationInProgress)
+            return;
+
+        XRGeneralSettings settings = XRGeneralSettings.Instance;
+        XRManagerSettings manager =
+            settings != null ? settings.Manager : null;
+
+        if (manager == null || manager.activeLoader == null)
+        {
+            xrSubsystemsStarted = false;
+            return;
+        }
+
+        manager.StopSubsystems();
+        xrSubsystemsStarted = false;
+        manager.DeinitializeLoader();
+    }
+
+    private static void DisableCameras(GameObject root)
+    {
+        if (root == null)
+            return;
+
+        foreach (Camera cameraComponent in
+                 root.GetComponentsInChildren<Camera>(true))
+        {
+            cameraComponent.enabled = false;
+        }
+    }
+
+    private static bool AreXRSubsystemsRunning()
+    {
+        List<XRDisplaySubsystem> displays =
+            new List<XRDisplaySubsystem>();
+        SubsystemManager.GetSubsystems(displays);
+
+        foreach (XRDisplaySubsystem display in displays)
+        {
+            if (display != null && display.running)
+                return true;
+        }
+
+        return false;
     }
 
     private void ResolveSceneObjects()

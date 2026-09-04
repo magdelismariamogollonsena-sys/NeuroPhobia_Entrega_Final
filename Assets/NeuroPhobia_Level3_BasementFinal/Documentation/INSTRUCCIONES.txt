@@ -1,0 +1,46 @@
+NEUROPHOBIA - NIVEL 3 SOTANO ENORME FINAL
+
+Este ZIP ya incluye modelos y texturas necesarias.
+
+INSTALACIÓN:
+1. Detén Play y Ctrl+S.
+2. Cierra Unity.
+3. Extrae este ZIP directamente en C:\NeuroPhobia\
+4. Abre Unity y espera a que compile.
+5. Ejecuta:
+   Tools > NeuroPhobia > Nivel 3 > CREAR SOTANO ENORME FINAL
+6. Pulsa Play y prueba primero con Computador.
+
+Crea respaldo:
+Assets/Scenes/Nivel3_BACKUP_Antes_SotanoEnorme.unity
+
+Tamaño:
+64 x 48 metros.
+
+Incluye:
+- piso y paredes de concreto
+- techo
+- corredores
+- columnas
+- zona de almacenamiento
+- cajas y estantes
+- escritorio
+- tuberías
+- ductos
+- barricadas
+- placas metálicas
+- escalera decorativa
+- luces frías
+- luces rojas de emergencia
+
+IMPORTANTE:
+- conserva selector PC/RV
+- conserva HUD
+- conserva araña y su lógica
+- conserva el script de orbes
+- mueve solamente los dos orbes para separarlos mucho y alargar el recorrido
+- azul queda activo al inicio
+- naranja queda desactivado hasta que corresponda
+
+Si oculta un entorno visual anterior que querías conservar:
+Tools > NeuroPhobia > Nivel 3 > Restaurar sotano visual anterior

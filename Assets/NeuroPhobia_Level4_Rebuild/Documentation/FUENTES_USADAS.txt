@@ -1,0 +1,16 @@
+RECURSOS INCLUIDOS EN ESTE PARCHE
+
+El parche fue ensamblado únicamente a partir de los archivos que el usuario
+subió en esta conversación:
+
+- FBX-20260820T042206Z-1-001.zip
+- FBX-20260820T045441Z-1-001.zip
+- kenney_furniture-kit.zip
+- painted_plaster_wall_1k.zip
+- diagonal_parquet_1k.zip
+- plaster_grey_04_1k.zip
+- wood_floor_1k.zip
+- suburban_garden_2k.hdr
+
+Se incluyó solo una selección necesaria de los modelos para no inflar
+innecesariamente el proyecto.

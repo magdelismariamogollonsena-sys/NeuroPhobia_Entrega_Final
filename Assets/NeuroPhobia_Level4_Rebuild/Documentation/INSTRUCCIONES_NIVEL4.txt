@@ -1,0 +1,75 @@
+NEUROPHOBIA - NIVEL 4 CASA ENORME FINAL
+
+ESTE ZIP YA INCLUYE una selección de los modelos, texturas y HDR que subiste.
+NO necesitas importar por separado los ZIP de Kenney, Poly Haven o los FBX.
+
+OBJETIVO:
+Reemplazar SOLO el escenario visual del Nivel 4 por una casa/sala enorme,
+ordenada y hogareña, conservando gameplay, araña, puntos de exposición,
+UI y selector PC/RV.
+
+TAMAÑO:
+32 x 24 metros.
+Es 4 veces el área de la versión anterior de 16 x 12.
+
+INCLUYE:
+- suelo de parquet con collider
+- paredes de yeso crema
+- pared de acento
+- techo cálido
+- zócalos y molduras
+- vigas de techo
+- 3 ventanas grandes y cortinas
+- fondo HDR exterior
+- sala principal
+- sofá y sillones
+- mesa de centro
+- chimenea decorativa
+- comedor de 6 puestos
+- librero y rincón de lectura
+- plantas
+- lámparas
+- cuadros
+- escalera decorativa y descanso
+- iluminación cálida
+- colliders en piso, paredes y muebles importantes
+
+INSTALACIÓN:
+1. Detén Play.
+2. Ctrl+S.
+3. Cierra Unity.
+4. Extrae ESTE ZIP directamente dentro de:
+   C:\NeuroPhobia\
+5. Abre Unity.
+6. Espera a que termine de importar/compilar.
+7. Abre Nivel4.
+8. Ejecuta:
+   Tools > NeuroPhobia > Nivel 4 > RECONSTRUIR CASA ENORME FINAL
+9. Espera a que termine.
+10. Pulsa Play y prueba primero en Computador.
+
+SEGURIDAD:
+- crea automáticamente:
+  Assets/Scenes/Nivel4_BACKUP_Antes_CasaEnorme.unity
+- si existe NP_LEVEL4_FINAL, elimina SOLO sus hijos visuales
+  Environment y Furniture.
+- conserva Gameplay, SpiderRoutes, NP_Level4_Controller y UI.
+- no toca Nivel1, Nivel2, Nivel3 ni Nivel5.
+- no ejecuta los instaladores antiguos de Nivel4/Nivel5.
+
+OBJETO NUEVO:
+NP_ENV_NIVEL4_CASA_ENORME_FINAL
+
+ORGANIZACIÓN:
+01_ARQUITECTURA
+02_SALA
+03_COMEDOR
+04_LECTURA_LIBRERO
+05_ESCALERA_DECORATIVA
+06_DECORACION
+07_ILUMINACION
+08_VENTANAS_Y_CORTINAS
+
+NOTA:
+La zona central cercana a los puntos originales de exposición se deja
+intencionalmente despejada para no bloquear la araña ni la terapia.

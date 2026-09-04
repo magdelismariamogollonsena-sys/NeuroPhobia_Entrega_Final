@@ -1,0 +1,93 @@
+NEUROPHOBIA - MEGA ARREGLO NIVELES 2, 3, 4 Y 5
+================================================
+
+ESTE ES UN SOLO PAQUETE.
+Ya incluye los assets y scripts necesarios para los arreglos descritos.
+
+DIFERENCIA ENTRE NIVEL 4 Y NIVEL 5
+-----------------------------------
+NIVEL 4 = CASA / SALA DOMESTICA GRANDE
+Objetivo:
+- 3 puntos de exposición.
+- En cada punto acercarse al orbe y mirar la araña durante 10 segundos.
+- Al terminar carga Nivel5 después de 5 segundos.
+
+NIVEL 5 = FABRICA INDUSTRIAL GRANDE
+Objetivo:
+- recorrer 4 orbes en orden;
+- llegar a la zona final;
+- mirar la araña central durante 15 segundos;
+- mostrar la finalización de NeuroPhobia.
+
+INSTALACION
+-----------
+1. Detén Play.
+2. Ctrl + S.
+3. Cierra Unity.
+4. Extrae ESTE ZIP directamente dentro de:
+   C:\NeuroPhobia\
+5. Abre Unity.
+6. Espera a que importe y compile.
+7. Si NO hay errores rojos CS..., ejecuta:
+
+Tools
+> NeuroPhobia
+> MEGA ARREGLO NIVELES 2-5
+> 1. APLICAR TODO 2-5
+
+ARREGLOS QUE APLICA
+-------------------
+NIVEL 2
+- conserva la araña, temporizador y límite de distancia;
+- desactiva objetos visuales de agua detectables por nombre/material;
+- agrega 48 árboles extra y 28 arbustos extra;
+- conserva el parque grande y el HDR.
+
+NIVEL 3
+- conserva orbes, araña, PC/RV, UI y lógica;
+- desactiva el sótano pequeño viejo;
+- conserva el sótano enorme;
+- agrega muchas cajas, estanterías, máquinas, tuberías,
+  señalización y 15 luces adicionales.
+
+NIVEL 4
+- asegura que exista el gameplay del Nivel 4;
+- reemplaza el entorno visual por la CASA ENORME;
+- conserva el controlador y gameplay;
+- separa los tres puntos de exposición para que se recorra la casa.
+
+NIVEL 5
+- asegura que exista el gameplay del Nivel 5;
+- reemplaza la fábrica visual por una fábrica de aprox. 60 x 44 m;
+- agrega transportadores, máquinas, robot arms, grúa,
+  cajas, pasarelas, tuberías y luces;
+- separa los cuatro orbes;
+- amplía las rutas de las tres arañas;
+- mantiene la mirada final de 15 segundos.
+
+RESPALDOS
+---------
+Antes de modificar:
+Assets/Scenes/Nivel2_BACKUP_MegaFix.unity
+Assets/Scenes/Nivel3_BACKUP_MegaFix.unity
+Assets/Scenes/Nivel4_BACKUP_MegaFix.unity
+Assets/Scenes/Nivel5_BACKUP_MegaFix.unity
+
+COMANDOS INDIVIDUALES
+---------------------
+También puedes ejecutar cada nivel por separado desde:
+Tools > NeuroPhobia > MEGA ARREGLO NIVELES 2-5
+
+IMPORTANTE
+----------
+Después de usar este paquete NO vuelvas a ejecutar instaladores antiguos
+globales de Nivel 4/5, porque podrían reconstruir las versiones pequeñas.
+
+Prueba en este orden:
+1. Nivel2
+2. Nivel3
+3. Nivel4
+4. Nivel5
+
+Si Unity muestra un error rojo CS..., envía el PRIMER error rojo completo.
+Los errores de Token Exchange / Package Manager no son errores del código.
