@@ -1,0 +1,32 @@
+NEUROPHOBIA - FIX ORBES NIVEL 4 Y 5
+
+PROBLEMA CORREGIDO:
+Los controladores usaban Vector3.Distance entre la CAMARA y el orbe.
+Eso incluye la altura Y de la cámara, por eso podía mostrar ~2.5 m
+aunque el jugador estuviera parado encima del orbe.
+
+ARREGLO:
+- La distancia se calcula solamente en X/Z (distancia sobre el suelo).
+- Nivel 4 activationRadius = 2.25 m.
+- Nivel 5 orbCollectionRadius = 2.25 m.
+- Nivel 5 finalZoneRadius = 2.25 m.
+- Funciona de la misma forma para PC y RV.
+
+INSTALACION:
+1. Detén Play.
+2. Ctrl+S.
+3. Cierra Unity.
+4. Extrae este ZIP directamente en C:\NeuroPhobia\
+5. Si Windows pregunta, ACEPTA reemplazar:
+   NPLevel4Controller.cs
+   NPLevel5Controller.cs
+6. Abre Unity y espera a que compile.
+7. Ejecuta:
+   Tools > NeuroPhobia > Niveles 4 y 5 >
+   CORREGIR DISTANCIA ORBES PC Y RV
+8. Prueba Nivel4.
+9. Prueba Nivel5.
+
+RESPALDOS DE ESCENAS:
+Assets/Scenes/Nivel4_BACKUP_Antes_FIX_Orbes.unity
+Assets/Scenes/Nivel5_BACKUP_Antes_FIX_Orbes.unity

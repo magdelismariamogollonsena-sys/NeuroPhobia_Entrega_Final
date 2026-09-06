@@ -29,3 +29,39 @@
 # Sistema operativo
 .DS_Store
 Thumbs.db
+# Respaldos y recuperacion local (no forman parte del juego publicado)
+[Bb]ackups/
+[Bb]ackups.meta
+/Assets/_Recovery/
+/Assets/_Recovery.meta
+/Assets/Scenes/*_BACKUP_*.unity
+/Assets/Scenes/*_BACKUP_*.unity.meta
+*.disabled
+*.disabled.meta
+*.bak
+*.cache
+
+# Paquetes de instalacion y metadatos de carpetas ya trasladadas
+/Assets/NeuroPhobia_Nivel2_PARQUE_GRANDE_FINAL.zip
+/Assets/NeuroPhobia_Nivel2_PARQUE_GRANDE_FINAL.zip.meta
+/Assets/NeuroPhobia_Nivel2_PARQUE_GRANDE_FINAL.meta
+/Assets/NeuroPhobia_Nivel3_SOTANO_ENORME_FINAL.zip
+/Assets/NeuroPhobia_Nivel3_SOTANO_ENORME_FINAL.zip.meta
+/Assets/NeuroPhobia_Nivel3_SOTANO_ENORME_FINAL.meta
+
+# Utilidades locales de reparacion y copias de codigo
+/APLICAR_FIX_NIVEL4.bat
+/APLICAR_FIX_NIVEL4.ps1
+/LIMPIAR_ASSETS_DUPLICADOS.bat
+/LIMPIAR_ASSETS_DUPLICADOS.ps1
+/REPARAR_DUPLICADOS_LEVEL45.bat
+/REPARAR_DUPLICADOS_LEVEL45.ps1
+/REPARAR_ORBES45_SIN_DUPLICAR.bat
+/REPARAR_ORBES45_SIN_DUPLICAR.ps1
+/NPLevel4Controller_NUEVO.txt
+/Assets/NPLevel4Controller_NUEVO.txt
+/Assets/NPLevel4Controller_NUEVO.txt.meta
+/Assets/APLICAR_FIX_NIVEL4_MULTIPLES_ARANAS.bat
+/Assets/APLICAR_FIX_NIVEL4_MULTIPLES_ARANAS.bat.meta
+/Assets/APLICAR_FIX_NIVEL4_MULTIPLES_ARANAS.ps1
+/Assets/APLICAR_FIX_NIVEL4_MULTIPLES_ARANAS.ps1.meta
