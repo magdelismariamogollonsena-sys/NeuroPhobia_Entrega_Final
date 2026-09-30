@@ -8,6 +8,13 @@
 [Rr]ecordings/
 [Bb]uild/
 [Bb]uilds/
+[Aa]_BackUpThisFolder_ButDontShipItWithYourGame/
+
+# Builds exportados (apk/exe/etc.)
+*.apk
+*.aab
+*.exe
+*.app
 
 # Visual Studio y VS Code
 .vs/
