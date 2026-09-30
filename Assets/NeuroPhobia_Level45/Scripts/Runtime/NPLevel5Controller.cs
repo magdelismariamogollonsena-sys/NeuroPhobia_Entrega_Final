@@ -283,8 +283,6 @@ namespace NeuroPhobia.Level45
             if (completionTitle != null) completionTitle.text = "¡Nivel completado!";
             if (completionSubtitle != null) completionSubtitle.text = "Has completado NeuroPhobia.";
             PlayClip(completionClip);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
 
         public void LoadMenu()

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit.UI;
 
 /// <summary>
 /// Menú principal moderno de NeuroPhobia.
@@ -53,7 +54,9 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
         uiRoot.transform.SetParent(transform, false);
 
         Canvas canvas = uiRoot.AddComponent<Canvas>();
-        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.renderMode = RenderMode.ScreenSpaceCamera;
+        canvas.worldCamera = FindGameplayCamera();
+        canvas.planeDistance = 1.5f;
         canvas.overrideSorting = true;
         canvas.sortingOrder = 30000;
 
@@ -63,7 +66,7 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
         scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
         scaler.matchWidthOrHeight = 0.5f;
 
-        uiRoot.AddComponent<GraphicRaycaster>();
+        uiRoot.AddComponent<TrackedDeviceGraphicRaycaster>();
 
         BuildBackground(uiRoot.transform);
         BuildMainPanel(uiRoot.transform);
@@ -767,15 +770,39 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
         if (current != null)
         {
             current.gameObject.SetActive(true);
+
+            if (current.GetComponent<XRUIInputModule>() == null)
+            {
+                StandaloneInputModule legacy =
+                    current.GetComponent<StandaloneInputModule>();
+
+                if (legacy != null)
+                {
+                    Destroy(legacy);
+                }
+
+                current.gameObject.AddComponent<XRUIInputModule>();
+            }
+
             return;
         }
 
         GameObject eventObject = new GameObject(
             "EventSystem",
             typeof(EventSystem),
-            typeof(StandaloneInputModule));
+            typeof(XRUIInputModule));
 
         eventObject.transform.position = Vector3.zero;
+    }
+
+    private static Camera FindGameplayCamera()
+    {
+        if (Camera.main != null)
+        {
+            return Camera.main;
+        }
+
+        return FindFirstObjectByType<Camera>();
     }
 
     public void ShowMain()
