@@ -73,6 +73,6 @@ No aparece salida, nombre, versión o confianza de un modelo de IA; inferencia/p
 Rutas de referencia
 `Assets/Scripts/Metricas/SessionReport.cs`, `MetricsCollector.cs`, `Assets/Scripts/Control/SessionManager.cs`, `Assets/Scripts/Comunicacion/FastAPIClient.cs`, `Assets/Scripts/Control/AdaptiveCommandPoller.cs`.
 
-El módulo/modelo de Inteligencia Artificial NO forma parte del nodo Unity ni de este alcance. Unity únicamente produce y expone los datos necesarios para una integración posterior.
+EL MÓDULO / MODELO DE INTELIGENCIA ARTIFICIAL NO FORMA PARTE DEL ALCANCE UNITY. Unity únicamente produce y expone los campos del SessionReport mediante JSON local y la interfaz FastAPIClient existente para un posible análisis externo futuro. No se implementa inferencia, entrenamiento ni análisis de IA en este nodo.
 
 Nota de interfaz: GlobalSessionUI registra el nivel completado o interrumpido con MetricsCollector.BuildMetrics(passed); SessionManager evita duplicar el mismo nivel. El resumen utiliza GetReport(). La asignación grado -> nivel inicial queda pendiente de la tabla definida por la cliente; se mantiene la progresión inicial Nivel1.

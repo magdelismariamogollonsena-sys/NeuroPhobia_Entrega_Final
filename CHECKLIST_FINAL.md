@@ -1,32 +1,33 @@
-# Checklist final — alcance Unity
+# Checklist final del nodo Unity
 
-| Elemento | Estado | Evidencia o límite |
+| Elemento | Estado | Evidencia y límite |
 |---|---|---|
-| Bienvenida y consentimiento | CUMPLE | MainMenu abre el panel antes de iniciar la sesión. |
-| Captura PhobiaGrade 1..5 | CUMPLE | `StartSession(grade)` recibe la selección y `SessionReport.phobiaGrade` la conserva. La tabla grado → nivel espera definición de la cliente. |
-| SessionManager | CUMPLE | Una sola instancia persistente; cierre idempotente y duración de reloj real. |
-| MainMenu | CUMPLE | Inicio → consentimiento → evaluación → Nivel1; datos, controles y salir. |
-| Perfil, interfaz Unity | CUMPLE | Nombre, correo, validación, guardar local durante la ejecución y volver. |
-| Validación visual de datos | CUMPLE | Mensajes específicos para nombre y correo. |
-| Persistencia/backend de perfil | FUERA DE ALCANCE | No se envía ni almacena remotamente. |
-| Pausa | CUMPLE | UI global en Nivel1, Nivel3, Nivel4 y Nivel5, `GameStateManager`, `Time.timeScale` y pausa de `AranaController`. |
-| Salida de emergencia | CUMPLE | Confirma, registra métricas disponibles como nivel no completado y vuelve a MainMenu. |
-| Resultado por nivel | CUMPLE | CanvasLevelComplete para Nivel1, Nivel3 y Nivel4; Nivel5 cierra en CanvasSessionSummary. |
-| Resumen de sesión | CUMPLE | CanvasSessionSummary usa `SessionManager.GetReport()` después de cerrar. |
-| Retroalimentación | CUMPLE | Reglas descriptivas basadas en `LevelMetrics`, sin interpretación clínica. |
-| SessionReport | CUMPLE | Grado, ID, tiempo, niveles y métricas reales. |
-| JSON | CUMPLE | `EndSession()` usa la serialización local existente. Verificar escritura en Play Mode. |
-| FastAPIClient | CUMPLE | Se reutilizan los métodos existentes; errores de red no bloquean el flujo. |
-| HUD global | CUMPLE | Se conservan los HUD de cada escenario y solo se añade un botón de pausa separado. Las métricas de tiempo aparecen en el resultado/resumen. |
-| Nivel1 | CUMPLE | Resultado conectado; progresión a Nivel2 bloqueada por escenario pendiente. |
-| Nivel2 | PENDIENTE NIVEL2 | BLOQUEADO: escenario nuevo de la cliente no presente en repositorio. Escena intacta. |
-| Nivel3 | CUMPLE | Resultado conectado y avance manual a Nivel4. |
-| Nivel4 | CUMPLE | Resultado conectado; avance manual a Nivel5 disponible. |
-| Nivel5 | IMPLEMENTADO / PENDIENTE PRUEBA QUEST | Apartamento conservado; paredes URP y techo; cuatro tareas, PhobiaGrade, SpawnManager, métricas, cierre y resumen conectados. Puerta y nevera conservan el visual estático por la restricción de Transform. Ver REVISION_NIVEL5_FINAL.md. |
-| PC | PENDIENTE PC | Probar mouse, Escape, foco de campos, pausa, reportes y escritura JSON en Editor/PC. |
-| Quest | PENDIENTE QUEST | Probar raycast UI, legibilidad y controles. La entrada física de pausa requiere acción segura validada en dispositivo; botón UI siempre visible. |
-| IA | FUERA DE ALCANCE | Solo inventario de parámetros. |
-| Backend | FUERA DE ALCANCE | Sin implementación de servidor/endpoints. |
+| Unity y Build Settings | CUMPLE | Unity 6000.3.7f1; MainMenu, Nivel1, Nivel2, Nivel3, Nivel4 y Nivel5 habilitados en ese orden. |
+| Bienvenida y consentimiento | CUMPLE | MainMenu muestra bienvenida, aceptación y salida antes de la evaluación. |
+| PhobiaGrade 1–5 | CUMPLE | La selección llama `StartSession(grade)` y llega a `SessionReport.phobiaGrade`; todo grado inicia en Nivel1 hasta que la cliente defina otra progresión. |
+| Perfil visual | CUMPLE | Nombre y correo se validan y conservan solo en memoria durante la ejecución. |
+| Controles y MainMenu | CUMPLE | Pantalla de información, navegación y salida disponibles. |
+| Pausa global | CUMPLE | `GlobalSessionUI` usa `GameStateManager`; no hay `PauseManager` paralelo. Validación física pendiente. |
+| Salida de emergencia | CUMPLE | Captura el nivel interrumpido con `levelPassed=false`, cierra la sesión y vuelve a MainMenu. |
+| Resultado y resumen | CUMPLE | `CanvasLevelComplete` en niveles 1, 3 y 4; `CanvasSessionSummary` lee el `SessionReport` real. Retroalimentación descriptiva, sin diagnóstico. |
+| Nivel1 | CUMPLE | Flujo, HUD, pausa, métricas y resultado conectados; avance a Nivel2 bloqueado deliberadamente. |
+| Nivel2 | PENDIENTE NIVEL2 | El escenario nuevo de la cliente no está disponible. `Nivel2.unity` de esta rama contiene un parque histórico; no se asume que sea el nuevo escenario aprobado y la escena no se modificó. |
+| Nivel3 | CUMPLE | Flujo, HUD, pausa, métricas, resultado y transición manual a Nivel4 conectados. |
+| Nivel4 | CUMPLE | Interacción existente, HUD, pausa, métricas, resultado y transición manual a Nivel5 conectados. |
+| Nivel5 visual | CUMPLE | Apartamento aprobado, sala, cocina, cuarto, baño, paredes URP, `08_TECHO`, lámpara, puerta, nevera, ventana y cinco spawn points conservados. |
+| Nivel5 arañas | CUMPLE | PhobiaGrade 1–5 produce 1–5 CaveSpider; inválido usa 1; un spawn por punto, escala 0.3, `FREE_ROAM`, sin persecución y con pausa global. |
+| Nivel5 tareas | CUMPLE | Solo `TASK_LAMP`, `TASK_DOOR`, `TASK_FRIDGE`, `TASK_WINDOW` cuentan para éxito. Lámpara cambia luz; puerta real y dos hojas de nevera tienen pivotes y apertura suave; ventana requiere 5 s de mirada continua. |
+| Nivel5 HUD y éxito | CUMPLE | Un HUD activo con las cuatro tareas y progreso X/4; éxito requiere cuatro tareas y `avoidanceAttempts <= maxAvoidanceAttempts` (Inspector, 5 por defecto). |
+| Nivel5 cierre | CUMPLE | `LevelMetrics`, `SessionManager`, `SESSION_END`, `SessionReport`, JSON local y resumen conectados; backend opcional. |
+| FastAPIClient | CUMPLE | Interfaz existente con llamadas no bloqueantes; ausencia de servicio no bloquea el cierre local. |
+| Parámetros para IA futura | CUMPLE | `PARAMETROS_IA.txt` enumera los campos reales, tipos, origen, actualización y transporte. |
+| Auditoría C# y escenas | CUMPLE | Batch de Unity: 0 errores C#, 0 Missing Scripts y 0 materiales ausentes en las seis escenas habilitadas; referencias críticas de Nivel5 conectadas. |
+| Build Android | PENDIENTE PC | Un intento sin APK: excepción del validador OpenXR/MetaQuest y reimportación prolongada en esta máquina. No se alteró XR ni se repitió el build. |
+| Validación PC | PENDIENTE PC | Play Mode, interacción visual, raycast, escritura JSON y mensajes XR sin headset pendientes. |
+| Validación física Quest | PENDIENTE QUEST | Interacción XR, movimiento, colisiones, legibilidad, pausa y apertura de puerta/nevera pendientes en dispositivo. |
+| Backend | FUERA DE ALCANCE | Sin implementación del servicio. |
 | Base de datos | FUERA DE ALCANCE | Sin persistencia remota. |
+| IA | FUERA DE ALCANCE | Sin módulo, modelo, análisis ni diagnóstico. |
+| Persistencia real de perfil | FUERA DE ALCANCE | Solo estado local en memoria. |
 
-Verificacion estatica Nivel5: Unity 6000.3.7f1 compilo con 0 errores C# y guardo la escena. No se hizo build Android ni Play Mode. Missing Scripts: 0 referencias sin resolver en Assets y PackageCache. Quedan pendientes las pruebas PC y Quest.
+Los resultados de la auditoría batch y del único intento de build Android se registran en `ESTADO_FINAL_ENTREGA.md`.

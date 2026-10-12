@@ -1,5 +1,7 @@
 # Revisión de interfaces globales
 
+> Nota de cierre: el apartado histórico que indica que Nivel5 aún debe enlazarse ya quedó superado. Su estado vigente se describe en `CHECKLIST_FINAL.md`, `REVISION_NIVEL5_FINAL.md` y `ESTADO_FINAL_ENTREGA.md`.
+
 ## Implementado
 
 - MainMenu: bienvenida/consentimiento, evaluación inicial 1–5, perfil visual con validación local, controles y salida. Los botones de acceso directo a niveles se retiran del menú reconstruido en runtime.

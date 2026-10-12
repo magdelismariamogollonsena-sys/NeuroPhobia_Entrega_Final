@@ -972,7 +972,7 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
             sceneName != "Nivel" + SessionManager.Instance.ResolveInitialLevel(SessionManager.Instance.PhobiaGrade) ||
             sceneName == "Nivel2" || sceneName == "Nivel5")
         {
-            if (feedbackText != null) feedbackText.text = "Inicia desde la evaluación inicial. Los niveles 2 y 5 están pendientes.";
+            if (feedbackText != null) feedbackText.text = "Inicia desde la evaluación inicial. El escenario nuevo de Nivel 2 está pendiente.";
             return;
         }
         if (!Application.CanStreamedLevelBeLoaded(sceneName))
