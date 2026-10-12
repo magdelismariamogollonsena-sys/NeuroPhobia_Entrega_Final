@@ -1,0 +1,74 @@
+﻿BORRADOR — PARÁMETROS EXISTENTES PARA ANÁLISIS POSTERIOR
+Proyecto: NeuroPhobia_CLIENTE_FUNCIONAL
+
+Alcance y cautela
+Este inventario describe solo datos que aparecen en el código actual. No implementa IA ni propone/inventa variables de captura. Un campo “podría consumirse” indica compatibilidad técnica potencial como dato de entrada/etiqueta, no que exista modelo, entrenamiento, evaluación clínica o interpretación validada.
+
+Conteo: 17 campos de dominio serializados en SessionReport (5) y LevelMetrics (12). Los wrappers HTTP agregan campos de transporte y se enumeran después de la tabla, no forman parte de los 17.
+
+| Campo exacto | Tipo C# / JSON | Descripción según el código | Dónde se genera | Script que lo actualiza | Momento de registro | JSON/reporte | Backend | Uso posterior posible |
+|---|---|---|---|---|---|---|---|---|
+| sessionId | string | Identificador UUID de sesión | Guid.NewGuid en inicio de sesión | SessionManager | StartSession; copiado a reporte y cada payload | SessionReport, session start, level metrics y session end | Sí, POST start/metrics/end | Sí, vínculo/agrupación de registros |
+| phobiaGrade | int | Grado ingresado, restringido a rango 1–5 | argumento de StartSession | SessionManager | Al iniciar sesión | SessionReport y payload start | Sí, POST start | Sí, posible variable de estratificación; significado clínico no especificado aquí |
+| totalDuration | float | Duración total según reloj de juego (Time.time) | resta de tiempo al inicio de sesión | SessionManager | EndSession | SessionReport; fullReport del POST end | Sí, POST end | Sí, duración/resultado descriptivo |
+| levelMetrics | List<LevelMetrics> | Métricas acumuladas por nivel | lista inicializada en SessionReport | SessionManager | AddLevelMetrics | SessionReport y fullReport | Sí, POST end | Sí, secuencia de registros por nivel |
+| timestamp | string | Hora UTC ISO-8601 del inicio y después actualizada al cierre | DateTime.UtcNow.ToString("o") | SessionManager; FastAPIClient arma copia para start | Inicio y cierre de sesión | SessionReport y start payload | Sí, POST start; en reporte POST end | Sí, marca temporal |
+| level | int | Índice de nivel | componente/escena o nivel fijado en llamada | MetricsCollector.BuildMetrics; controladores | Al construir el registro | LevelMetrics y wrapper de métricas | Sí, POST metrics/end | Sí, segmentación por nivel |
+| gazeTimeOnSpider | float | Segundos mirando hacia araña estimados por raycast | acumulador en TrackGaze; algunos niveles lo sobrescriben con requerido | MetricsCollector; p. ej. Level2GazeTimer/Level4ContactTimer | Muestreo Update; copia al completar nivel | LevelMetrics | Sí, POST metrics/end | Sí, exposición visual; cuenta aproximada, depende de collider/raycast |
+| avoidanceAttempts | int | Conteo de ocasiones de movimiento interpretado como alejamiento de araña | comparación de distancia y desplazamiento muestreada | MetricsCollector.SampleMovement | Muestreo periódico, nominalmente cada 0.5 s | LevelMetrics | Sí, POST metrics/end | Sí, conducta espacial descriptiva; regla de código es heurística |
+| headMovementFrequency | float | Ángulo de cabeza dividido por intervalo y 90 (no una frecuencia Hz calibrada) | Quaternion.Angle de rotación del player | MetricsCollector.SampleMovement | Muestreo periódico, nominalmente cada 0.5 s | LevelMetrics | Sí, POST metrics/end | Posible predictor/señal de movimiento, con validación y unidades por aclarar |
+| proximityMin | float | Menor distancia 3D entre player y spider muestreada; -1 si nunca se actualizó | Vector3.Distance en SampleMovement | MetricsCollector | Muestreo periódico | LevelMetrics | Sí, POST metrics/end | Sí, proximidad; susceptible a altura/cámara/rig |
+| taskCompletions | List<string> | IDs de tareas registradas | RegisterTaskCompletion; llamadas desde sistemas de tareas | MetricsCollector, TaskManager y task managers | Al completar tarea | LevelMetrics | Sí, POST metrics/end | Sí, secuencia/lista de eventos resumida |
+| breathingActivations | int | Número de activaciones registradas explícitamente | RegisterBreathingActivation | MetricsCollector; no se halló llamada en flujo inspeccionado | Cuando algún consumidor invoca registro | LevelMetrics | Sí, POST metrics/end | Potencial si el evento se conecta; hoy valor puede permanecer cero |
+| levelPassed | bool | Resultado pasado entregado a BuildMetrics | argumento `passed` | quien llama BuildMetrics | Al crear LevelMetrics | LevelMetrics | Sí, POST metrics/end | Sí, resultado/etiqueta operacional |
+| sessionDuration | float | Duración del nivel desde Start del collector (Time.time) | reloj de nivel | MetricsCollector.BuildMetrics | Al construir métricas | LevelMetrics | Sí, POST metrics/end | Sí, duración por nivel |
+| levelAttempts | int | Contador de intentos registrados | RegisterLevelAttempt | MetricsCollector; no se halló llamada en flujo inspeccionado | Cuando consumidor registra intento | LevelMetrics | Sí, POST metrics/end | Potencial si se registra; puede permanecer cero |
+| handWithdrawals | int | Número de retiros de mano registrados | RegisterHandWithdrawal | MetricsCollector; no se encontró enlace de evento confirmado | Cuando consumidor registra retiro | LevelMetrics | Sí, POST metrics/end | Potencial; captura efectiva pendiente |
+| handContactDuration | float | Acumulado de segundos suministrados mediante AddHandContactTime | Register/AddHandContactTime | MetricsCollector y consumidor externo, si lo hay | Durante/después de contacto manual | LevelMetrics | Sí, POST metrics/end | Potencial; captura efectiva pendiente |
+
+Estructura JSON
+
+SessionReport:
+- sessionId: string
+- phobiaGrade: integer
+- totalDuration: number (float)
+- levelMetrics: array de LevelMetrics
+- timestamp: string ISO UTC
+
+LevelMetrics:
+- level: integer
+- gazeTimeOnSpider: number
+- avoidanceAttempts: integer
+- headMovementFrequency: number
+- proximityMin: number
+- taskCompletions: array de string
+- breathingActivations: integer
+- levelPassed: boolean
+- sessionDuration: number
+- levelAttempts: integer
+- handWithdrawals: integer
+- handContactDuration: number
+
+SessionManager serializa el reporte completo con `JsonUtility.ToJson(report, true)` a `Application.persistentDataPath/session_<SessionId>.json` al final de sesión.
+
+Wrappers de transporte existentes:
+- POST `/api/session/start`: `{ sessionId, phobiaGrade, timestamp }`
+- POST `/api/session/metrics`: `{ sessionId, level, metrics }`
+- POST `/api/session/end`: `{ sessionId, fullReport }`
+- GET `/api/session/command/{sessionId}`; respuesta esperada `{ action }`.
+- Base URL por defecto: `http://localhost:8000` (`FastAPIClient.baseUrl`). No se encontró implementación FastAPI/backend en el inventario Unity.
+
+Comandos adaptativos actuales
+`AdaptiveCommandPoller` pregunta cada 5 s si existe SessionId. Solo contempla `pause` y `resume`. `pause` establece BREATHING durante 15 s; `resume` vuelve a PLAYING. Ante error HTTP se devuelve `none`. No se hallaron comandos para cambiar PhobiaGrade, velocidades, rutas u otros parámetros.
+
+A. Datos que YA EXISTEN
+Los 17 campos de la tabla y la lógica que intenta llenarlos. La calidad/actualización real varía: el código incluye varios métodos de registro cuyo consumidor no se encontró, y ciertas métricas se asignan solo al completar.
+
+B. Datos PREPARADOS para backend
+Los tres POST, GET de comando y los payloads anteriores existen en FastAPIClient. SessionManager invoca POST start/metrics/end si encuentra el componente FastAPIClient. El menú/escena y configuración deben verificarse en runtime; que el endpoint esté en código no demuestra que el servicio esté instalado, disponible o accesible desde Quest. `localhost` requiere particular atención en dispositivo.
+
+C. Datos que NO existen en este esquema/código inspeccionado
+No aparece salida, nombre, versión o confianza de un modelo de IA; inferencia/predicción; frecuencia cardíaca, EEG u otros sensores fisiológicos; registro crudo de trayectoria o mirada con timestamps; calibración ocular; edad/demografía; etiquetas diagnósticas; consentimiento; versión de protocolo; ni persistencia histórica/almacenamiento backend implementado aquí. No deben tratarse como existentes ni inferirse de métricas actuales.
+
+Rutas de referencia
+`Assets/Scripts/Metricas/SessionReport.cs`, `MetricsCollector.cs`, `Assets/Scripts/Control/SessionManager.cs`, `Assets/Scripts/Comunicacion/FastAPIClient.cs`, `Assets/Scripts/Control/AdaptiveCommandPoller.cs`.

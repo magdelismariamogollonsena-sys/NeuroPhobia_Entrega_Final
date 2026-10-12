@@ -24,6 +24,7 @@ public sealed class NeuroPhobiaLevel2StableGaze : MonoBehaviour
 
     [Header("Referencias opcionales")]
     public Renderer spiderRenderer;
+    public MetricsCollector metricsCollector;
 
     private float currentTime;
     private float bestAttempt;
@@ -48,6 +49,7 @@ public sealed class NeuroPhobiaLevel2StableGaze : MonoBehaviour
         DisableOldLevel2Hud();
 
         FindSpider();
+        if (metricsCollector == null) metricsCollector = FindFirstObjectByType<MetricsCollector>();
         BuildHud();
         UpdateHud(false);
     }
@@ -67,6 +69,7 @@ public sealed class NeuroPhobiaLevel2StableGaze : MonoBehaviour
         }
 
         Camera activeCamera = GetActiveGameplayCamera();
+        if (activeCamera != null) AttachHudToCamera(activeCamera);
 
         if (activeCamera == null)
         {
@@ -119,6 +122,7 @@ public sealed class NeuroPhobiaLevel2StableGaze : MonoBehaviour
 
                 currentTime = 0f;
                 lostGazeTime = 0f;
+                if (metricsCollector != null) metricsCollector.RegisterLevelAttempt();
                 SaveBest();
             }
         }
@@ -391,12 +395,13 @@ public sealed class NeuroPhobiaLevel2StableGaze : MonoBehaviour
     private void BuildHud()
     {
         GameObject root =
-            new GameObject("NP_Nivel2_HUD_MiradaEstable");
+            new GameObject("NP_Nivel2_HUD_MiradaEstable", typeof(RectTransform));
 
         root.transform.SetParent(transform, false);
 
         hudCanvas = root.AddComponent<Canvas>();
-        hudCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        hudCanvas.renderMode = RenderMode.WorldSpace;
+        root.GetComponent<RectTransform>().sizeDelta = new Vector2(1280f, 720f);
         hudCanvas.overrideSorting = true;
         hudCanvas.sortingOrder = 32000;
 
@@ -617,12 +622,21 @@ public sealed class NeuroPhobiaLevel2StableGaze : MonoBehaviour
         completed = true;
         SaveBest();
 
+        if (metricsCollector != null && SessionManager.Instance != null)
+        {
+            LevelMetrics metrics = metricsCollector.BuildMetrics(true);
+            metrics.level = 2;
+            metrics.gazeTimeOnSpider = Mathf.Max(metrics.gazeTimeOnSpider, requiredSeconds);
+            SessionManager.Instance.AddLevelMetrics(metrics);
+        }
+
         if (hudCanvas != null)
         {
             hudCanvas.gameObject.SetActive(false);
         }
 
         BuildCompletionScreen();
+        AttachHudToCamera(GetActiveGameplayCamera());
 
         float oldScale = Time.timeScale;
         Time.timeScale = 0f;
@@ -654,13 +668,13 @@ public sealed class NeuroPhobiaLevel2StableGaze : MonoBehaviour
     private void BuildCompletionScreen()
     {
         GameObject root =
-            new GameObject("NP_Nivel2_Completado");
+            new GameObject("NP_Nivel2_Completado", typeof(RectTransform));
 
         root.transform.SetParent(transform, false);
 
         completionCanvas = root.AddComponent<Canvas>();
-        completionCanvas.renderMode =
-            RenderMode.ScreenSpaceOverlay;
+        completionCanvas.renderMode = RenderMode.WorldSpace;
+        root.GetComponent<RectTransform>().sizeDelta = new Vector2(1280f, 720f);
         completionCanvas.overrideSorting = true;
         completionCanvas.sortingOrder = 32760;
 
@@ -710,6 +724,23 @@ public sealed class NeuroPhobiaLevel2StableGaze : MonoBehaviour
             text.rectTransform,
             new Vector2(0.10f, 0.18f),
             new Vector2(0.90f, 0.82f));
+    }
+
+    private void AttachHudToCamera(Camera camera)
+    {
+        if (camera == null) return;
+        Attach(hudCanvas, camera);
+        Attach(completionCanvas, camera);
+    }
+
+    private static void Attach(Canvas canvas, Camera camera)
+    {
+        if (canvas == null || canvas.transform.parent == camera.transform) return;
+        canvas.transform.SetParent(camera.transform, false);
+        canvas.transform.localPosition = new Vector3(0f, 0f, 1.5f);
+        canvas.transform.localRotation = Quaternion.identity;
+        canvas.transform.localScale = Vector3.one * 0.0015f;
+        canvas.worldCamera = camera;
     }
 
     private static GameObject FindSceneObject(string exactName)
