@@ -85,6 +85,11 @@ public class AranaController : MonoBehaviour, IPhobiaStimulus
     {
         patrolTimer += Time.deltaTime * moveSpeed * 0.5f;
         Vector3 offset = new Vector3(Mathf.Sin(patrolTimer) * patrolRadius, 0f, Mathf.Cos(patrolTimer * 0.7f) * patrolRadius);
-        transform.position = startPosition + offset;
+        Vector3 destination = startPosition + offset;
+        Vector3 eye = transform.position + Vector3.up * .08f;
+        Vector3 toDestination = destination - transform.position;
+        if (toDestination.sqrMagnitude > .000001f && Physics.Raycast(eye, toDestination.normalized, out RaycastHit hit, toDestination.magnitude + .05f) &&
+            hit.transform != transform && !hit.transform.IsChildOf(transform)) return;
+        transform.position = destination;
     }
 }

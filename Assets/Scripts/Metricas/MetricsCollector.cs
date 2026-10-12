@@ -6,6 +6,7 @@ public class MetricsCollector : MonoBehaviour
     public int level = 1;
     public Transform player;
     public Transform spider;
+    private AranaController[] level5Spiders;
     public string spiderLayerName = "Spider";
 
     private float levelStartTime;
@@ -35,6 +36,7 @@ public class MetricsCollector : MonoBehaviour
 
     private void Update()
     {
+        if (GameStateManager.CurrentState != GameState.PLAYING) return;
         TrackGaze();
         SampleMovement();
     }
@@ -43,6 +45,8 @@ public class MetricsCollector : MonoBehaviour
     {
         if (!taskCompletions.Contains(taskId)) taskCompletions.Add(taskId);
     }
+
+    public void SetSpiders(AranaController[] activeSpiders) { level5Spiders = activeSpiders; }
 
     public void RegisterBreathingActivation() { breathingActivations++; }
     public void RegisterLevelAttempt() { levelAttempts++; }
@@ -92,13 +96,24 @@ public class MetricsCollector : MonoBehaviour
         float deltaAngle = Quaternion.Angle(lastHeadRotation, player.rotation);
         headMovementFrequency = deltaAngle / sampleTimer / 90f;
 
-        if (spider != null)
+        Transform nearestSpider = spider;
+        if (level5Spiders != null)
         {
-            float distance = Vector3.Distance(player.position, spider.position);
+            float nearestDistance = float.MaxValue;
+            foreach (AranaController candidate in level5Spiders)
+            {
+                if (candidate == null) continue;
+                float distanceToCandidate = Vector3.Distance(player.position, candidate.transform.position);
+                if (distanceToCandidate < nearestDistance) { nearestDistance = distanceToCandidate; nearestSpider = candidate.transform; }
+            }
+        }
+        if (nearestSpider != null)
+        {
+            float distance = Vector3.Distance(player.position, nearestSpider.position);
             if (distance < proximityMin) proximityMin = distance;
 
             float moved = Vector3.Distance(player.position, lastPlayerPosition);
-            bool movedAwayFromSpider = Vector3.Distance(player.position, spider.position) > Vector3.Distance(lastPlayerPosition, spider.position);
+            bool movedAwayFromSpider = Vector3.Distance(player.position, nearestSpider.position) > Vector3.Distance(lastPlayerPosition, nearestSpider.position);
             if (movedAwayFromSpider && moved > 2f && sampleTimer <= 1f) avoidanceAttempts++;
         }
 

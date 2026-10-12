@@ -4,26 +4,59 @@ using UnityEngine;
 public class TaskManager : MonoBehaviour
 {
     public MetricsCollector metricsCollector;
-    public List<string> requiredTasks = new List<string> { "TASK_LAMP", "TASK_DOOR", "TASK_FRIDGE", "TASK_WINDOW" };
-    public int avoidanceThreshold = 5;
-
+    [Min(0)] public int maxAvoidanceAttempts = 5;
+    public Level5HUD hud;
+    private static readonly string[] OfficialTasks = { "TASK_LAMP", "TASK_DOOR", "TASK_FRIDGE", "TASK_WINDOW" };
     private readonly HashSet<string> completedTasks = new HashSet<string>();
+    private bool finished;
+
+    public int TotalTasks => OfficialTasks.Length;
+    public int CompletedCount => completedTasks.Count;
+    public List<string> CompletedIds => new List<string>(completedTasks);
+    public bool IsCompleted(string id) => completedTasks.Contains(id);
 
     private void Start()
     {
         if (metricsCollector == null) metricsCollector = FindFirstObjectByType<MetricsCollector>();
+        Refresh();
+    }
+
+    private void Update()
+    {
+        if (!finished && completedTasks.Count == TotalTasks && GameStateManager.CurrentState == GameState.PLAYING) TryFinish();
     }
 
     public void CompleteTask(string taskId)
     {
-        if (completedTasks.Contains(taskId)) return;
-        completedTasks.Add(taskId);
+        if (finished || GameStateManager.CurrentState != GameState.PLAYING || System.Array.IndexOf(OfficialTasks, taskId) < 0) return;
+        if (!completedTasks.Add(taskId)) return;
         if (metricsCollector != null) metricsCollector.RegisterTaskCompletion(taskId);
+        Refresh();
+        TryFinish();
+    }
 
-        if (completedTasks.Count >= requiredTasks.Count)
+    private void Refresh()
+    {
+        if (hud != null) hud.SetTasks(completedTasks, TotalTasks);
+    }
+
+    public void RefreshHUD() => Refresh();
+
+    private void TryFinish()
+    {
+        if (completedTasks.Count != TotalTasks || metricsCollector == null) return;
+        LevelMetrics metrics = metricsCollector.BuildMetrics(false);
+        if (metrics.avoidanceAttempts > maxAvoidanceAttempts)
         {
-            LevelMetrics metrics = metricsCollector != null ? metricsCollector.BuildMetrics(true) : new LevelMetrics { level = 5, levelPassed = true };
-            if (LevelManager.Instance != null) LevelManager.Instance.OnLevelComplete(5, metrics);
+            if (hud != null) hud.ShowAvoidanceLimit(maxAvoidanceAttempts);
+            return;
         }
+        finished = true;
+        metrics.level = 5;
+        metrics.levelPassed = true;
+        if (SessionManager.Instance != null) SessionManager.Instance.AddLevelMetrics(metrics);
+        GameStateManager.SetState(GameState.SESSION_END);
+        if (SessionManager.Instance != null) SessionManager.Instance.EndSession();
+        GlobalSessionUI.ShowSessionSummary();
     }
 }

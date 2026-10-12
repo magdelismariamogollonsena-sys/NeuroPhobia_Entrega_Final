@@ -39,7 +39,7 @@ public sealed class GlobalSessionUI : MonoBehaviour
         if (current != null) Destroy(current.gameObject);
         current = null;
         if (!scene.name.StartsWith("Nivel") || !int.TryParse(scene.name.Substring(5), out int number) ||
-            (number != 1 && number != 3 && number != 4)) return;
+            (number != 1 && number != 3 && number != 4 && number != 5)) return;
         GameObject root = new GameObject("NP_GlobalSessionUI", typeof(RectTransform));
         current = root.AddComponent<GlobalSessionUI>();
         current.level = number;
@@ -91,9 +91,8 @@ public sealed class GlobalSessionUI : MonoBehaviour
         GameStateManager.SetState(GameState.LEVEL_COMPLETE);
         Time.timeScale = 0f;
         resultText.text = "Nivel completado\nHas finalizado esta etapa de exposición.\n" + MetricsText(metrics);
-        nextButton.interactable = level == 3;
+        nextButton.interactable = level == 3 || level == 4;
         if (level == 1) resultText.text += "\nNivel 2 pendiente: escenario nuevo no disponible.";
-        if (level == 4) resultText.text += "\nNivel 5 pendiente: configuración visual posterior.";
         resultPanel.SetActive(true);
     }
 
@@ -249,10 +248,11 @@ public sealed class GlobalSessionUI : MonoBehaviour
 
     private void NextLevel()
     {
-        if (level != 3) return;
+        if (level != 3 && level != 4) return;
         Time.timeScale = 1f;
-        if (LevelManager.Instance != null) LevelManager.Instance.LoadLevel(4);
-        else SceneManager.LoadScene("Nivel4");
+        int next = level + 1;
+        if (LevelManager.Instance != null) LevelManager.Instance.LoadLevel(next);
+        else SceneManager.LoadScene("Nivel" + next);
     }
 
     private void EndAndMenu()
@@ -282,6 +282,8 @@ public sealed class GlobalSessionUI : MonoBehaviour
             current.BuildCanvas();
         }
         if (SessionManager.Instance != null) SessionManager.Instance.EndSession();
+        GameStateManager.SetState(GameState.SESSION_END);
+        Time.timeScale = 0f;
         current.completed = true;
         current.HidePanels();
         current.resultPanel.SetActive(false);
@@ -312,7 +314,7 @@ public sealed class GlobalSessionUI : MonoBehaviour
         if (metrics.handContactDuration > 0f) text.Append(" | contacto de mano: " + metrics.handContactDuration.ToString("0.0") + " s");
         if (metrics.proximityMin >= 0f) text.Append(" | proximidad mínima: " + metrics.proximityMin.ToString("0.0") + " m");
         if (metrics.gazeTimeOnSpider > 0f) text.Append(" | observación: " + metrics.gazeTimeOnSpider.ToString("0.0") + " s");
-        if (metrics.taskCompletions != null && metrics.taskCompletions.Count > 0) text.Append(" | tareas: " + metrics.taskCompletions.Count);
+        if (metrics.taskCompletions != null && metrics.taskCompletions.Count > 0) text.Append(" | tareas: " + string.Join(", ", metrics.taskCompletions));
         if (metrics.breathingActivations > 0) text.Append(" | respiraciones: " + metrics.breathingActivations);
         if (metrics.avoidanceAttempts > 0) text.Append("\nSe registraron intentos de alejamiento durante la exposición.");
         if (metrics.breathingActivations > 0) text.Append("\nSe utilizó el sistema de respiración durante la sesión.");
