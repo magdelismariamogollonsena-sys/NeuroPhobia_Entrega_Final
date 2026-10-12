@@ -491,23 +491,7 @@ namespace NeuroPhobia.Level45
                 return;
 
             completing = true;
-            completionRemaining = transitionDelay;
-
-            if (spiderPatrol != null)
-                spiderPatrol.PausePatrol();
-
-            if (completionPanel != null)
-                completionPanel.SetActive(true);
-
-            if (completionTitle != null)
-                completionTitle.text = "¡Felicitaciones!";
-
-            if (completionSubtitle != null)
-                completionSubtitle.text =
-                    "Completaste el Nivel 4";
-
-            PlayClip(completionClip);
-            UpdateCompletionText();
+            GlobalSessionUI.CompleteLevel(4);
         }
 
         private void UpdateCompletion()
@@ -524,8 +508,7 @@ namespace NeuroPhobia.Level45
                 if (!string.IsNullOrWhiteSpace(
                         nextSceneName))
                 {
-                    SceneManager.LoadSceneAsync(
-                        nextSceneName);
+                    GlobalSessionUI.CompleteLevel(4);
                 }
             }
         }

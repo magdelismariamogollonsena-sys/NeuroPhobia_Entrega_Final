@@ -12,6 +12,7 @@ public class SessionManager : MonoBehaviour
 
     private SessionReport report;
     private float sessionStartTime;
+    private bool ended;
     private FastAPIClient apiClient;
 
     private void Awake()
@@ -30,9 +31,11 @@ public class SessionManager : MonoBehaviour
     public void StartSession(int phobiaGrade)
     {
         SessionId = Guid.NewGuid().ToString();
-        PhobiaGrade = Mathf.Clamp(phobiaGrade, 1, 5);
+        if (phobiaGrade < 1 || phobiaGrade > 5) throw new ArgumentOutOfRangeException(nameof(phobiaGrade));
+        PhobiaGrade = phobiaGrade;
         CurrentLevel = 1;
-        sessionStartTime = Time.time;
+        sessionStartTime = Time.realtimeSinceStartup;
+        ended = false;
 
         report = new SessionReport
         {
@@ -47,7 +50,8 @@ public class SessionManager : MonoBehaviour
 
     public void AddLevelMetrics(LevelMetrics metrics)
     {
-        if (report == null) StartSession(1);
+        if (report == null || ended || metrics == null) return;
+        if (report.levelMetrics.Exists(existing => existing.level == metrics.level)) return;
         report.levelMetrics.Add(metrics);
 
         if (apiClient != null) StartCoroutine(apiClient.PostLevelMetrics(SessionId, metrics.level, metrics));
@@ -55,10 +59,11 @@ public class SessionManager : MonoBehaviour
 
     public void EndSession()
     {
-        if (report == null) return;
+        if (report == null || ended) return;
 
-        report.totalDuration = Time.time - sessionStartTime;
+        report.totalDuration = Time.realtimeSinceStartup - sessionStartTime;
         report.timestamp = DateTime.UtcNow.ToString("o");
+        ended = true;
         SaveReportLocally();
 
         if (apiClient != null) StartCoroutine(apiClient.PostSessionEnd(SessionId, report));
@@ -68,6 +73,16 @@ public class SessionManager : MonoBehaviour
     public SessionReport GetReport()
     {
         return report;
+    }
+
+    /// <summary>
+    /// Punto de configuración para la futura tabla grado -> nivel aprobada por la cliente.
+    /// Por ahora todo grado válido conserva el inicio de la progresión existente: Nivel1.
+    /// </summary>
+    public int ResolveInitialLevel(int phobiaGrade)
+    {
+        if (phobiaGrade < 1 || phobiaGrade > 5) throw new ArgumentOutOfRangeException(nameof(phobiaGrade));
+        return 1;
     }
 
     private void SaveReportLocally()

@@ -22,7 +22,7 @@ public class GameStateManager : MonoBehaviour
         CurrentState = state;
         OnStateChanged?.Invoke(CurrentState);
 
-        if (state == GameState.BREATHING)
+        if (state == GameState.BREATHING || state == GameState.PAUSED || state == GameState.LEVEL_COMPLETE || state == GameState.SESSION_END)
         {
             foreach (AranaController spider in UnityEngine.Object.FindObjectsByType<AranaController>(FindObjectsSortMode.None)) spider.Pause();
         }

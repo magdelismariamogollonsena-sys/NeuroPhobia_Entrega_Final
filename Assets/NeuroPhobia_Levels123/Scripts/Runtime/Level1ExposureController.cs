@@ -106,7 +106,7 @@ public class Level1ExposureController : MonoBehaviour
     private void CompleteLevel()
     {
         completed = true;
-        if (continueButton != null) continueButton.gameObject.SetActive(true);
+        GlobalSessionUI.CompleteLevel(1);
         if (statusText != null) statusText.text = "Nivel 1 completado. Pulsa Continuar.";
     }
 
@@ -122,5 +122,5 @@ public class Level1ExposureController : MonoBehaviour
         statusText.text = $"Imágenes observadas: {completedCards}/{requiredCards}\nFijación actual: {currentGaze:0.0}/{ActiveGaze:0}s\nRespiración: {(breathingDone ? "completada" : "en progreso")}";
     }
 
-    public void GoToLevel2() => SceneManager.LoadScene("Nivel2");
+    public void GoToLevel2() => GlobalSessionUI.CompleteLevel(1);
 }

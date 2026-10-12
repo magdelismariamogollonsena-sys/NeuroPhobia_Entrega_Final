@@ -157,18 +157,7 @@ public sealed class Level1SequentialGazeFlow : MonoBehaviour
             }
         }
 
-        if (completionPanel != null)
-        {
-            completionPanel.SetActive(true);
-        }
-
-        if (pauseGameplayDuringCompletion)
-        {
-            previousTimeScale = Time.timeScale;
-            Time.timeScale = 0f;
-        }
-
-        StartCoroutine(CompletionCountdown());
+        GlobalSessionUI.CompleteLevel(1);
     }
 
     private IEnumerator CompletionCountdown()

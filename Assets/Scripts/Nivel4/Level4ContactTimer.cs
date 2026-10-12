@@ -76,6 +76,7 @@ public class Level4ContactTimer : MonoBehaviour
             metrics.taskCompletions.Add("HAND_CONTACT_TIMER_COMPLETED");
             SessionManager.Instance.AddLevelMetrics(metrics);
         }
+        GlobalSessionUI.CompleteLevel(4);
 
         Debug.Log("NeuroPhobia Nivel 4: contacto virtual completado.");
     }

@@ -92,10 +92,7 @@ public sealed class Level3OrbSequenceFlow : MonoBehaviour
         completed = true;
         UpdateUI();
         if (spiderPatrol != null) spiderPatrol.PauseMovement();
-        if (completionPanel != null) completionPanel.SetActive(true);
-        previousTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
-        StartCoroutine(CompletionCountdown());
+        GlobalSessionUI.CompleteLevel(3);
     }
 
     private IEnumerator CompletionCountdown()

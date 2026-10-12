@@ -85,6 +85,6 @@ public class Level4HUD : MonoBehaviour
 
     public void GoToNextLevel()
     {
-        SceneManager.LoadScene(nextSceneName);
+        GlobalSessionUI.CompleteLevel(4);
     }
 }

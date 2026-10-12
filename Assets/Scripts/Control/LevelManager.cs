@@ -20,6 +20,7 @@ public class LevelManager : MonoBehaviour
     public void LoadLevel(int level)
     {
         level = Mathf.Clamp(level, 1, 5);
+        if (level == 2 || level == 5) { Debug.LogWarning("NeuroPhobia: escenario pendiente; nivel no cargado."); return; }
         if (SessionManager.Instance != null) SessionManager.Instance.CurrentLevel = level;
         SceneManager.LoadScene($"Nivel{level}");
     }
@@ -28,21 +29,15 @@ public class LevelManager : MonoBehaviour
     {
         int current = SessionManager.Instance != null ? SessionManager.Instance.CurrentLevel : ExtractCurrentLevel();
         int next = Mathf.Clamp(current + 1, 1, 5);
+        if (next == 2 || next == 5) { Debug.LogWarning("NeuroPhobia: nivel pendiente de escenario; avance deshabilitado."); return; }
         LoadLevel(next);
     }
 
     public void OnLevelComplete(int level, LevelMetrics metrics)
     {
         if (SessionManager.Instance != null) SessionManager.Instance.AddLevelMetrics(metrics);
-
-        if (level >= 5)
-        {
-            GameStateManager.SetState(GameState.SESSION_END);
-            if (SessionManager.Instance != null) SessionManager.Instance.EndSession();
-            return;
-        }
-
-        UnlockNextLevel();
+        if (level >= 5) { GameStateManager.SetState(GameState.SESSION_END); if (SessionManager.Instance != null) SessionManager.Instance.EndSession(); return; }
+        GlobalSessionUI.CompleteLevel(level);
     }
 
     private int ExtractCurrentLevel()

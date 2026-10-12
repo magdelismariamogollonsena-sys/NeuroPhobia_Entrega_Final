@@ -166,39 +166,7 @@ public class NPLevel3RealOrbs : MonoBehaviour
     IEnumerator Finish()
     {
         done = true;
-        if (hud) hud.gameObject.SetActive(false);
-
-        var root = new GameObject("NP_L3_Completado");
-        var c = root.AddComponent<Canvas>();
-        c.renderMode = RenderMode.ScreenSpaceOverlay;
-        c.overrideSorting = true;
-        c.sortingOrder = 32760;
-
-        var sc = root.AddComponent<CanvasScaler>();
-        sc.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        sc.referenceResolution = new Vector2(1280,720);
-
-        var panel = new GameObject("Fondo", typeof(RectTransform), typeof(Image));
-        panel.transform.SetParent(root.transform, false);
-        var rr = panel.GetComponent<RectTransform>();
-        rr.anchorMin = Vector2.zero; rr.anchorMax = Vector2.one;
-        rr.offsetMin = Vector2.zero; rr.offsetMax = Vector2.zero;
-        panel.GetComponent<Image>().color = new Color(.015f,.025f,.045f,.98f);
-
-        var text = MakeText(panel.transform,
-            "¡Felicitaciones!\n\nCompletaste el Nivel 3\n\nEl Nivel 4 comenzará en 5 segundos.",
-            44, FontStyles.Bold);
-        SetRect(text.rectTransform, .1f,.18f,.9f,.82f);
-
-        float old = Time.timeScale;
-        Time.timeScale = 0;
-        float end = Time.realtimeSinceStartup + completionDelay;
-        while (Time.realtimeSinceStartup < end) yield return null;
-        Time.timeScale = old > 0 ? old : 1;
-
-        if (Application.CanStreamedLevelBeLoaded(nextScene))
-            SceneManager.LoadSceneAsync(nextScene);
-        else
-            Debug.LogError("Nivel4 no está agregado al Build.");
+        GlobalSessionUI.CompleteLevel(3);
+        yield break;
     }
 }

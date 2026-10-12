@@ -3,16 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class NeuroPhobiaMenuBridge : MonoBehaviour
 {
-    [SerializeField] private int defaultPhobiaGrade = 1;
-
     public void LoadNivel1()
     {
-        if (SessionManager.Instance != null)
-        {
-            SessionManager.Instance.StartSession(defaultPhobiaGrade);
-        }
-
-        SceneManager.LoadScene("Nivel1");
+        NeuroPhobiaMainMenuModern menu = FindFirstObjectByType<NeuroPhobiaMainMenuModern>();
+        if (menu != null) menu.StartExperience();
     }
 
     public void QuitApplication()

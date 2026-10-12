@@ -32,5 +32,6 @@ public class LevelCompletionTrigger : MonoBehaviour
         MetricsCollector collector = FindFirstObjectByType<MetricsCollector>();
         LevelMetrics metrics = collector != null ? collector.BuildMetrics(true) : new LevelMetrics { level = level, levelPassed = true };
         if (LevelManager.Instance != null) LevelManager.Instance.OnLevelComplete(level, metrics);
+        else GlobalSessionUI.CompleteLevel(level);
     }
 }

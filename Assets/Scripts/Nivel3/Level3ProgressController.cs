@@ -49,6 +49,7 @@ public class Level3ProgressController : MonoBehaviour
             metrics.taskCompletions.Add("CP2_1M");
             SessionManager.Instance.AddLevelMetrics(metrics);
         }
+        GlobalSessionUI.CompleteLevel(3);
         Debug.Log("NeuroPhobia Nivel 3: checkpoints completados.");
     }
 

@@ -20,6 +20,15 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
     private GameObject mainPanel;
     private GameObject levelsPanel;
     private GameObject instructionsPanel;
+    private GameObject consentPanel;
+    private GameObject gradePanel;
+    private GameObject profilePanel;
+    private TMP_InputField nameInput;
+    private TMP_InputField emailInput;
+    private TMP_Text profileStatus;
+    // Estado visual local en memoria: se pierde al cerrar la aplicación.
+    private static string localName = "";
+    private static string localEmail = "";
     private TMP_Text feedbackText;
 
     private static readonly Color Background =
@@ -70,8 +79,8 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
 
         BuildBackground(uiRoot.transform);
         BuildMainPanel(uiRoot.transform);
-        BuildLevelsPanel(uiRoot.transform);
         BuildInstructionsPanel(uiRoot.transform);
+        BuildSessionPanels(uiRoot.transform);
 
         ShowMain();
     }
@@ -275,12 +284,12 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
         CreateMenuButton(
             actionCard.transform,
             "ElegirNivel",
-            "ELEGIR NIVEL",
+            "MIS DATOS",
             new Vector2(0.10f, 0.38f),
             new Vector2(0.90f, 0.51f),
             AccentBlue,
             Color.white,
-            ShowLevels);
+            ShowProfile);
 
         CreateMenuButton(
             actionCard.transform,
@@ -807,6 +816,7 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
 
     public void ShowMain()
     {
+        HideSessionPanels();
         if (mainPanel != null)
         {
             mainPanel.SetActive(true);
@@ -830,20 +840,7 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
 
     public void ShowLevels()
     {
-        if (mainPanel != null)
-        {
-            mainPanel.SetActive(false);
-        }
-
-        if (levelsPanel != null)
-        {
-            levelsPanel.SetActive(true);
-        }
-
-        if (instructionsPanel != null)
-        {
-            instructionsPanel.SetActive(false);
-        }
+        ShowMain();
     }
 
     public void ShowInstructions()
@@ -866,11 +863,118 @@ public sealed class NeuroPhobiaMainMenuModern : MonoBehaviour
 
     public void StartExperience()
     {
-        LoadLevel("Nivel1");
+        ShowConsent();
+    }
+
+    private void BuildSessionPanels(Transform parent)
+    {
+        consentPanel = BuildSimplePanel(parent, "Consentimiento", "Bienvenido a NeuroPhobia", "Esta es una experiencia de exposición gradual en realidad virtual. Puedes pausar o detener la experiencia cuando lo necesites.");
+        CreateMenuButton(consentPanel.transform, "Aceptar", "Aceptar y continuar", new Vector2(.22f,.24f), new Vector2(.78f,.33f), Accent, Color.black, ShowGrade);
+        CreateMenuButton(consentPanel.transform, "Salir", "Salir", new Vector2(.22f,.12f), new Vector2(.78f,.21f), PanelSoft, Color.white, ShowMain);
+
+        gradePanel = BuildSimplePanel(parent, "EvaluacionInicial", "Evaluación inicial", "¿Qué grado de miedo o fobia percibes actualmente?\n1 = menor intensidad     5 = mayor intensidad");
+        for (int grade = 1; grade <= 5; grade++)
+        {
+            int selected = grade;
+            float left = .15f + (grade - 1) * .145f;
+            CreateMenuButton(gradePanel.transform, "Grado" + grade, grade.ToString(), new Vector2(left,.34f), new Vector2(left + .11f,.46f), AccentBlue, Color.white, () => SelectGrade(selected));
+        }
+        CreateMenuButton(gradePanel.transform, "Volver", "Volver", new Vector2(.30f,.14f), new Vector2(.70f,.23f), PanelSoft, Color.white, ShowConsent);
+
+        profilePanel = BuildSimplePanel(parent, "MisDatos", "MIS DATOS", "Nombre y correo electrónico. Validación local durante esta ejecución.");
+        nameInput = CreateInput(profilePanel.transform, "Nombre", .51f);
+        emailInput = CreateInput(profilePanel.transform, "Correo electrónico", .40f);
+        CreateMenuButton(profilePanel.transform, "Validar", "Validar", new Vector2(.18f,.26f), new Vector2(.46f,.34f), AccentBlue, Color.white, ValidateProfile);
+        CreateMenuButton(profilePanel.transform, "Guardar", "Guardar cambios", new Vector2(.54f,.26f), new Vector2(.82f,.34f), Accent, Color.black, SaveProfile);
+        CreateMenuButton(profilePanel.transform, "Volver", "Volver", new Vector2(.33f,.10f), new Vector2(.67f,.18f), PanelSoft, Color.white, ShowMain);
+        profileStatus = CreateText(profilePanel.transform, "EstadoValidacion", "", 17f, FontStyles.Normal, TextAlignmentOptions.Center, Color.white);
+        SetAnchors(profileStatus.rectTransform, new Vector2(.15f,.19f), new Vector2(.85f,.25f));
+    }
+
+    private void HideSessionPanels()
+    {
+        if (consentPanel != null) consentPanel.SetActive(false);
+        if (gradePanel != null) gradePanel.SetActive(false);
+        if (profilePanel != null) profilePanel.SetActive(false);
+    }
+
+    private GameObject BuildSimplePanel(Transform parent, string name, string title, string description)
+    {
+        GameObject panel = CreateUIObject(parent, name);
+        Stretch(panel.GetComponent<RectTransform>());
+        panel.AddComponent<Image>().color = new Color(.025f,.035f,.055f,.98f);
+        TMP_Text heading = CreateText(panel.transform, "Titulo", title, 38f, FontStyles.Bold, TextAlignmentOptions.Center, Color.white);
+        SetAnchors(heading.rectTransform, new Vector2(.14f,.72f), new Vector2(.86f,.84f));
+        TMP_Text body = CreateText(panel.transform, "Descripcion", description, 23f, FontStyles.Normal, TextAlignmentOptions.Center, Muted);
+        SetAnchors(body.rectTransform, new Vector2(.17f,.51f), new Vector2(.83f,.68f));
+        return panel;
+    }
+
+    private TMP_InputField CreateInput(Transform parent, string label, float bottom)
+    {
+        TMP_Text caption = CreateText(parent, label + "Etiqueta", label, 17f, FontStyles.Normal, TextAlignmentOptions.Left, Muted);
+        SetAnchors(caption.rectTransform, new Vector2(.22f,bottom + .07f), new Vector2(.78f,bottom + .12f));
+        GameObject field = CreateUIObject(parent, label + "Campo");
+        SetAnchors(field.GetComponent<RectTransform>(), new Vector2(.22f,bottom), new Vector2(.78f,bottom + .07f));
+        field.AddComponent<Image>().color = PanelSoft;
+        TMP_Text value = CreateText(field.transform, "Valor", "", 19f, FontStyles.Normal, TextAlignmentOptions.Left, Color.white);
+        SetAnchors(value.rectTransform, new Vector2(.03f,0), new Vector2(.97f,1));
+        TMP_InputField input = field.AddComponent<TMP_InputField>();
+        input.textViewport = field.GetComponent<RectTransform>();
+        input.textComponent = (TextMeshProUGUI)value;
+        input.text = label == "Nombre" ? localName : localEmail;
+        return input;
+    }
+
+    public void ShowConsent() { ShowMain(); mainPanel.SetActive(false); consentPanel.SetActive(true); }
+    public void ShowGrade() { ShowMain(); mainPanel.SetActive(false); gradePanel.SetActive(true); }
+    public void ShowProfile() { ShowMain(); mainPanel.SetActive(false); profilePanel.SetActive(true); }
+
+    private void SelectGrade(int grade)
+    {
+        if (grade < 1 || grade > 5) return;
+        if (SessionManager.Instance == null)
+        {
+            ShowMain();
+            feedbackText.text = "No se encontró SessionManager.";
+            return;
+        }
+        SessionManager.Instance.StartSession(grade);
+        int initialLevel = SessionManager.Instance.ResolveInitialLevel(grade);
+        SessionManager.Instance.CurrentLevel = initialLevel;
+        LoadLevel("Nivel" + initialLevel);
+    }
+
+    private void ValidateProfile()
+    {
+        string name = nameInput.text.Trim();
+        string email = emailInput.text.Trim();
+        if (name.Length < 2 || name.Length > 80) { profileStatus.text = "Ingresa un nombre válido (2 a 80 caracteres)."; return; }
+        int at = email.IndexOf('@');
+        if (email.Length > 254 || at < 1 || at != email.LastIndexOf('@') || email.Contains(" ") ||
+            email.LastIndexOf('.') <= at + 1 || email.EndsWith("."))
+        { profileStatus.text = "Ingresa un correo electrónico válido."; return; }
+        profileStatus.text = "Datos validados correctamente.";
+    }
+
+    private void SaveProfile()
+    {
+        ValidateProfile();
+        if (profileStatus.text != "Datos validados correctamente.") return;
+        localName = nameInput.text.Trim();
+        localEmail = emailInput.text.Trim();
+        profileStatus.text = "Datos validados correctamente. Conservados solo durante esta ejecución.";
     }
 
     public void LoadLevel(string sceneName)
     {
+        if (SessionManager.Instance == null || SessionManager.Instance.GetReport() == null ||
+            sceneName != "Nivel" + SessionManager.Instance.ResolveInitialLevel(SessionManager.Instance.PhobiaGrade) ||
+            sceneName == "Nivel2" || sceneName == "Nivel5")
+        {
+            if (feedbackText != null) feedbackText.text = "Inicia desde la evaluación inicial. Los niveles 2 y 5 están pendientes.";
+            return;
+        }
         if (!Application.CanStreamedLevelBeLoaded(sceneName))
         {
             if (feedbackText != null)

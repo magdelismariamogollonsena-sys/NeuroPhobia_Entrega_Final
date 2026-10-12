@@ -46,6 +46,7 @@ public class Level3ProgressControllerV2 : MonoBehaviour
             metrics.taskCompletions.Add("CP2_1M");
             SessionManager.Instance.AddLevelMetrics(metrics);
         }
+        GlobalSessionUI.CompleteLevel(3);
     }
 
     private void UpdateHUD()
